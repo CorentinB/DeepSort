@@ -20,7 +20,7 @@ chmod +x deepsort
 
 Just input a folder, and all files will begin to be renames all the pictures files the following way:
 ```
-identified-image-class_original-name.ext
+identified-image-class_hash.ext
 ```
 To start the tagging:
 ```
