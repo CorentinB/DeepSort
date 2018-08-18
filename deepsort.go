@@ -83,7 +83,7 @@ func parseResponse(rawResponse []byte) string {
 func getClass(path string, name string) {
 	url := "http://localhost:8080/predict"
 	path, _ = filepath.Abs(path)
-	var jsonStr = []byte(`{"service":"imageserv","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + "/" + path + `"]}`)
+	var jsonStr = []byte(`{"service":"imageserv","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + path + `"]}`)
 	// DEBUG
 	//fmt.Println("Request: " + string(jsonStr))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
