@@ -2,8 +2,12 @@ package main
 
 import (
 	"bytes"
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
 	"os"
@@ -33,17 +37,27 @@ func randString(length int, charset string) string {
 	return string(b)
 }
 
-func renameFile(path string, name string, response string) {
-	originalName := filepath.Base(path)
-	absPath, _ := filepath.Abs(path)
-	dirPath := filepath.Dir(absPath)
-	newName := response + "_" + originalName
-	if len(path) > 100 {
-		extension := path[len(path)-4:]
-		newName = response + "_" + randString(11, charset) + extension
+func hashFileMD5(filePath string, name string) string {
+	h := md5.New()
+	f, err := os.Open(filePath)
+	if err != nil {
+		log.Fatal(err)
 	}
-	err := os.Rename(path, dirPath+"/"+newName)
+	defer f.Close()
+	if _, err := io.Copy(h, f); err != nil {
+		log.Fatal(err)
+	}
+	return (hex.EncodeToString(h.Sum(nil)))
+}
 
+func renameFile(path string, name string, response string) {
+	absPath, _ := filepath.Abs(path)
+	hash := hashFileMD5(absPath, name)
+	dirPath := filepath.Dir(absPath)
+	extension := path[len(path)-4:]
+	newName := response + "_" + hash + extension
+
+	err := os.Rename(absPath, dirPath+"/"+newName)
 	if err != nil {
 		fmt.Println(err)
 		stopDeepDetect(name)
@@ -80,7 +94,7 @@ func getClass(path string, name string) {
 
 	body, _ := ioutil.ReadAll(resp.Body)
 	parsedResponse := parseResponse(body)
-	color.Println(color.Yellow("[") + color.Cyan(path) + color.Yellow("]") + color.Yellow(" Response: ") + color.Green(parsedResponse))
+	color.Println(color.Yellow("[") + color.Cyan(filepath.Base(path)) + color.Yellow("]") + color.Yellow(" Response: ") + color.Green(parsedResponse))
 	renameFile(path, name, parsedResponse)
 }
 
