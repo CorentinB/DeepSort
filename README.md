@@ -27,6 +27,6 @@ To start the tagging:
 ./deepsort FOLDER 
 ```
 
-# Benchmark
+# (Really really quick) Benchmark
 
 Tested on 605 files, it took 11m18s on an i7 7700K.
