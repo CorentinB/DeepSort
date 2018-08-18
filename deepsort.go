@@ -23,6 +23,7 @@ import (
 
 var replaceSpace = strings.NewReplacer(" ", "_")
 var replaceComma = strings.NewReplacer(",", "")
+var replaceDoubleQuote = strings.NewReplacer("\"", "")
 
 const charset = "abcdefghijklmnopqrstuvwxyz" +
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -41,10 +42,12 @@ func hashFileMD5(filePath string, name string) string {
 	h := md5.New()
 	f, err := os.Open(filePath)
 	if err != nil {
+		stopDeepDetect(name)
 		log.Fatal(err)
 	}
 	defer f.Close()
 	if _, err := io.Copy(h, f); err != nil {
+		stopDeepDetect(name)
 		log.Fatal(err)
 	}
 	return (hex.EncodeToString(h.Sum(nil)))
@@ -73,12 +76,13 @@ func parseResponse(rawResponse []byte) string {
 	result := strings.Join(class, " ")
 	result = replaceSpace.Replace(result)
 	result = replaceComma.Replace(result)
-	result = result[:len(result)-1]
+	result = replaceDoubleQuote.Replace(result)
 	return (result)
 }
 
 func getClass(path string, name string) {
 	url := "http://localhost:8080/predict"
+	path, _ = filepath.Abs(path)
 	var jsonStr = []byte(`{"service":"imageserv","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + "/" + path + `"]}`)
 	// DEBUG
 	//fmt.Println("Request: " + string(jsonStr))
@@ -98,8 +102,8 @@ func getClass(path string, name string) {
 	renameFile(path, name, parsedResponse)
 }
 
-func runRecursively(name string) ([]string, error) {
-	searchDir := "Images"
+func runRecursively(path string, name string) ([]string, error) {
+	searchDir := path
 
 	fileList := make([]string, 0)
 	e := filepath.Walk(searchDir, func(path string, f os.FileInfo, err error) error {
@@ -127,9 +131,10 @@ func startDeepDetect(path string) string {
 	name := randString(11, charset)
 	path, _ = filepath.Abs(path)
 	cmd := "docker"
-	args := []string{"run", "-d", "-p", "8080:8080", "-v", path + ":/Images", "--name", name, "beniz/deepdetect_cpu"}
+	args := []string{"run", "-d", "-p", "8080:8080", "-v", path + ":" + path, "--name", name, "beniz/deepdetect_cpu"}
 	if err := exec.Command(cmd, args...).Run(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
+		stopDeepDetect(name)
 		os.Exit(1)
 	}
 	color.Println(color.Yellow("[") + color.Cyan("CONTAINER: "+name) + color.Yellow("] ") + color.Green("Successfully started DeepDetect. "))
@@ -141,6 +146,7 @@ func startDeepDetect(path string) string {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
+		stopDeepDetect(name)
 		panic(err)
 	}
 	defer resp.Body.Close()
@@ -166,7 +172,7 @@ func main() {
 	start := time.Now()
 	name := startDeepDetect(os.Args[1])
 	color.Println(color.Yellow("[") + color.Cyan("CONTAINER: "+name) + color.Yellow("] ") + color.Yellow("Starting image classification.. "))
-	runRecursively(name)
+	runRecursively(os.Args[1], name)
 	stopDeepDetect(name)
 	color.Println(color.Yellow("[") + color.Cyan("CONTAINER: "+name) + color.Yellow("] ") + color.Green("Successfully stopped DeepDetect. "))
 	color.Println(color.Cyan("Done in ") + color.Yellow(time.Since(start)) + color.Cyan("!"))
