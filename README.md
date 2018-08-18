@@ -16,6 +16,8 @@ Make it executable with:
 chmod +x deepsort
 ```
 
+You also need your local 8080 port to not be mapped already.
+
 # Usage
 
 Just input a folder, and all files will begin to be renames all the pictures files the following way:
