@@ -1,7 +1,11 @@
-[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)[![forthebadge](https://forthebadge.com/images/badges/made-with-go.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)[![forthebadge](https://forthebadge.com/images/badges/made-with-go.svg)](https://forthebadge.com) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c62d2294e151492da4792fcb63b71d05)](https://www.codacy.com/project/CorentinB/DeepSort/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CorentinB/DeepSort&amp;utm_campaign=Badge_Grade_Dashboard)
 
 # DeepSort
 🧠 AI powered image tagger backed by DeepDetect
+
+# Why?
+
+Because sometimes, you have folders full of badly named pictures, and you want to be able to understand what you have in your hard drive.
 
 # Prerequisites & installation
 
@@ -16,9 +20,11 @@ Make it executable with:
 chmod +x deepsort
 ```
 
+You also need your local 8080 port to not be mapped already.
+
 # Usage
 
-Just input a folder, and all files will begin to be renames all the pictures files the following way:
+Just input a folder, and it will recursively rename all the pictures the following way:
 ```
 identified-image-class_hash.ext
 ```
