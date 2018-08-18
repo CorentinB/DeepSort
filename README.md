@@ -3,6 +3,10 @@
 # DeepSort
 🧠 AI powered image tagger backed by DeepDetect
 
+# Why?
+
+Because sometimes, you have folders full of badly named pictures, and you want to be able to understand what you have in your hard drive.
+
 # Prerequisites & installation
 
 You need Docker installed, and you need to pull the DeepDetect image.
@@ -20,7 +24,7 @@ You also need your local 8080 port to not be mapped already.
 
 # Usage
 
-Just input a folder, and all files will begin to be renames all the pictures files the following way:
+Just input a folder, and it will recursively rename all the pictures the following way:
 ```
 identified-image-class_hash.ext
 ```
