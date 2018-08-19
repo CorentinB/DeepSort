@@ -57,6 +57,7 @@ Tested on 605 files, it took 11m18s on an i7 7700K.
 # Todo list
 
 - [X] Getting docker out of the loop (each user install his own DeepDetect)
+- [ ] Output folder (copy and not rename)
 - [ ] ResNet 50 integration
 - [ ] XMP metadata writing
 - [ ] GPU support
