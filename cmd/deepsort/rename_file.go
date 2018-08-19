@@ -1,22 +1,22 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/CorentinB/DeepSort/pkg/logging"
 )
 
-func renameFile(path string, name string, response string) {
+func renameFile(path string, arguments *Arguments, response string) {
 	absPath, _ := filepath.Abs(path)
-	hash := hashFileMD5(absPath, name)
+	hash := hashFileMD5(absPath)
 	dirPath := filepath.Dir(absPath)
 	extension := path[len(path)-4:]
 	newName := response + "_" + hash + extension
 
 	err := os.Rename(absPath, dirPath+"/"+newName)
 	if err != nil {
-		fmt.Println(err)
-		stopDeepDetect(name)
-		return
+		logging.Error("Unable to rename this file.", "["+filepath.Base(path)+"]")
+		os.Exit(1)
 	}
 }

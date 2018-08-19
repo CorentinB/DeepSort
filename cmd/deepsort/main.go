@@ -4,15 +4,21 @@ import (
 	"os"
 	"time"
 
+	"github.com/CorentinB/DeepSort/pkg/logging"
 	"github.com/labstack/gommon/color"
 )
 
+type Arguments struct {
+	Input string
+	URL   string
+}
+
 func main() {
 	start := time.Now()
-	name := startDeepDetect(os.Args[1])
-	color.Println(color.Yellow("[") + color.Cyan("CONTAINER: "+name) + color.Yellow("] ") + color.Yellow("Starting image classification.. "))
-	runRecursively(os.Args[1], name)
-	stopDeepDetect(name)
-	color.Println(color.Yellow("[") + color.Cyan("CONTAINER: "+name) + color.Yellow("] ") + color.Green("Successfully stopped DeepDetect. "))
+	arguments := new(Arguments)
+	argumentParsing(os.Args, arguments)
+	startGoogleNet(arguments)
+	logging.Success("Starting image classification..", "[GoogleNet]")
+	runRecursively(arguments)
 	color.Println(color.Cyan("Done in ") + color.Yellow(time.Since(start)) + color.Cyan("!"))
 }
