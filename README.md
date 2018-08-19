@@ -11,28 +11,43 @@ Because sometimes, you have folders full of badly named pictures, and you want t
 
 # Prerequisites & installation
 
-You need Docker installed, and you need to pull the DeepDetect image.
+You need DeepDetect installed, the easiest way is using docker:
 ```
 docker pull beniz/deepdetect_cpu
+docker run -d -p 8080:8080 -v /path/to/images:/path/to/images beniz/deepdetect_cpu
 ```
 
-First download the latest release from https://github.com/CorentinB/DeepSort/releases
-Make it executable with:
+PLEASE NOTE THAT THE PATH IN THE HOST SHOULD BE THE SAME IN THE CONTAINER!
+Example:
+```
+docker run -d -p 8080:8080 -v /home/corentin/Images:/home/corentin/Images beniz/deepdetect_cpu
+```
+
+If you prefeer using DeepDetect without Docker, refeer to the official documentation here:
+https://github.com/jolibrain/deepdetect/blob/master/README.md
+You'll find how to install it without Docker.
+
+Then, download the latest DeepSort release from https://github.com/CorentinB/DeepSort/releases
+Unzip your release, rename it `deepsort` and make it executable with:
 ```
 chmod +x deepsort
 ```
 
-You also need your local 8080 port to not be mapped already.
-
 # Usage
 
-Just input a folder, and it will recursively rename all the pictures the following way:
-```
-identified-image-class_hash.ext
-```
-To start the tagging:
-```
-./deepsort FOLDER 
+Right now, DeepSort doesnt support a lot of different parameters, you're obliged to fill two of them:
+`--url` or `-u` that correspond to the URL of your DeepDetect server.
+`--input` or `-i` that correspond to your local folder full of images.
+
+For more informations, refeer to the helper:
+```./deepsort --help
+usage: deepsort [-h|--help] -u|--url "<value>" -i|--input "<value>"
+                AI powered image tagger backed by DeepDetect
+Arguments:
+
+  -h  --help   Print help information
+  -u  --url    URL of your DeepDetect instance (i.e: http://localhost:8080)
+  -i  --input  Your input folder.
 ```
 
 # (Really really quick) Benchmark
@@ -41,6 +56,7 @@ Tested on 605 files, it took 11m18s on an i7 7700K.
 
 # Todo list
 
-- [ ] Getting docker out of the loop (each user install his own DeepDetect)
+- [X] Getting docker out of the loop (each user install his own DeepDetect)
 - [ ] ResNet 50 integration
 - [ ] XMP metadata writing
+- [ ] GPU support
