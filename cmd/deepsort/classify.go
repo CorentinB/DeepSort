@@ -6,12 +6,14 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/CorentinB/DeepSort/pkg/logging"
 	"github.com/labstack/gommon/color"
 )
 
-func googleNetClassification(path string, arguments *Arguments) {
+func googleNetClassification(path string, arguments *Arguments, wg *sync.WaitGroup) {
+	defer wg.Done()
 	url := arguments.URL + "/predict"
 	path, _ = filepath.Abs(path)
 	var jsonStr = []byte(`{"service":"deepsort-googlenet","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + path + `"]}`)

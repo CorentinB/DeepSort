@@ -5,12 +5,17 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/CorentinB/DeepSort/pkg/logging"
 	filetype "gopkg.in/h2non/filetype.v1"
 )
 
 func run(arguments *Arguments) {
+	// Handle parallelization
+	count := 0
+	var wg sync.WaitGroup
+	// Open input folder
 	f, err := os.Open(arguments.Input)
 	if err != nil {
 		log.Fatal(err)
@@ -22,16 +27,27 @@ func run(arguments *Arguments) {
 		os.Exit(1)
 	}
 
+	// Process files in the input folder
 	for _, file := range files {
 		path := arguments.Input + "/" + file.Name()
 		buf, _ := ioutil.ReadFile(path)
 		if filetype.IsImage(buf) {
-			googleNetClassification(path, arguments)
+			count++
+			wg.Add(1)
+			go googleNetClassification(path, arguments, &wg)
+			if count == arguments.Jobs {
+				wg.Wait()
+				count = 0
+			}
 		}
 	}
 }
 
 func runRecursively(arguments *Arguments) ([]string, error) {
+	// Handle parallelization
+	count := 0
+	var wg sync.WaitGroup
+	// Open input folder
 	fileList := make([]string, 0)
 	e := filepath.Walk(arguments.Input, func(path string, f os.FileInfo, err error) error {
 		fileList = append(fileList, path)
@@ -46,7 +62,13 @@ func runRecursively(arguments *Arguments) ([]string, error) {
 	for _, file := range fileList {
 		buf, _ := ioutil.ReadFile(file)
 		if filetype.IsImage(buf) {
-			googleNetClassification(file, arguments)
+			count++
+			wg.Add(1)
+			go googleNetClassification(file, arguments, &wg)
+		}
+		if count == arguments.Jobs {
+			wg.Wait()
+			count = 0
 		}
 	}
 

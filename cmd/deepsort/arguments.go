@@ -14,8 +14,9 @@ func argumentParsing(args []string, argument *Arguments) {
 	// Create flags
 	URL := parser.String("u", "url", &argparse.Options{Required: true, Help: "URL of your DeepDetect instance (i.e: http://localhost:8080)"})
 	input := parser.String("i", "input", &argparse.Options{Required: true, Help: "Your input folder."})
-	dryRun := parser.Flag("d", "dry-run", &argparse.Options{Required: false, Help: "Just classify images and return results, do not apply."})
 	recursive := parser.Flag("R", "recursive", &argparse.Options{Required: false, Help: "Process files recursively."})
+	jobs := parser.Int("j", "jobs", &argparse.Options{Required: false, Help: "Number of parallel jobs", Default: 1})
+	dryRun := parser.Flag("d", "dry-run", &argparse.Options{Required: false, Help: "Just classify images and return results, do not apply."})
 	// Parse input
 	err := parser.Parse(os.Args)
 	if err != nil {
@@ -27,6 +28,7 @@ func argumentParsing(args []string, argument *Arguments) {
 	// Handle the input flag
 	inputFolder, _ := filepath.Abs(*input)
 	// Finally save the collected flags
+	argument.Jobs = *jobs
 	argument.DryRun = *dryRun
 	argument.Recursive = *recursive
 	argument.Input = inputFolder

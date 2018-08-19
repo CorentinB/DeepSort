@@ -45,7 +45,7 @@ For more informations, refeer to the helper:
 
 [-u|--url] is required
 usage: deepsort [-h|--help] -u|--url "<value>" -i|--input "<value>"
-                [-d|--dry-run] [-R|--recursive]
+                [-R|--recursive] [-j|--jobs <integer>] [-d|--dry-run]
 
                 AI powered image tagger backed by DeepDetect
 
@@ -54,8 +54,9 @@ Arguments:
   -h  --help       Print help information
   -u  --url        URL of your DeepDetect instance (i.e: http://localhost:8080)
   -i  --input      Your input folder.
-  -d  --dry-run    Just classify images and return results, do not apply.
   -R  --recursive  Process files recursively.
+  -j  --jobs       Number of parallel jobs. Default: 1
+  -d  --dry-run    Just classify images and return results, do not apply.
 ```
 
 # (Really really quick) Benchmark
