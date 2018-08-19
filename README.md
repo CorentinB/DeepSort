@@ -40,7 +40,8 @@ Right now, DeepSort doesnt support a lot of different parameters, you're obliged
 `--input` or `-i` that correspond to your local folder full of images.
 
 For more informations, refeer to the helper:
-```./deepsort --help
+```
+./deepsort --help
 [-u|--url] is required
 usage: deepsort [-h|--help] -u|--url "<value>" -i|--input "<value>"
                 [-d|--dry-run]
