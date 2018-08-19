@@ -18,16 +18,20 @@ docker run -d -p 8080:8080 -v /path/to/images:/path/to/images beniz/deepdetect_c
 ```
 
 PLEASE NOTE THAT THE PATH IN THE HOST SHOULD BE THE SAME IN THE CONTAINER!
+
 Example:
 ```
 docker run -d -p 8080:8080 -v /home/corentin/Images:/home/corentin/Images beniz/deepdetect_cpu
 ```
 
 If you prefeer using DeepDetect without Docker, refeer to the official documentation here:
+
 https://github.com/jolibrain/deepdetect/blob/master/README.md
+
 You'll find how to install it without Docker.
 
 Then, download the latest DeepSort release from https://github.com/CorentinB/DeepSort/releases
+
 Unzip your release, rename it `deepsort` and make it executable with:
 ```
 chmod +x deepsort
