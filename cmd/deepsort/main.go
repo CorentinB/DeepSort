@@ -14,6 +14,7 @@ type Arguments struct {
 	DryRun    bool
 	Recursive bool
 	Jobs      int
+	Network   string
 }
 
 func main() {
@@ -21,21 +22,40 @@ func main() {
 	arguments := new(Arguments)
 	arguments.Jobs = 1
 	argumentParsing(os.Args, arguments)
-	startGoogleNet(arguments)
-	if arguments.Recursive == true {
-		if arguments.Jobs == 1 {
-			logging.Success("Starting image classification recursively..", "[GoogleNet]")
+	if arguments.Network == "resnet-50" {
+		startResNet50(arguments)
+		if arguments.Recursive == true {
+			if arguments.Jobs == 1 {
+				logging.Success("Starting image classification recursively..", "[ResNet-50]")
+			} else {
+				logging.Success("Starting image classification recursively with "+string(arguments.Jobs)+" parallel jobs..", "[ResNet-50]")
+			}
+			runRecursively(arguments)
 		} else {
-			logging.Success("Starting image classification recursively with "+string(arguments.Jobs)+" parallel jobs..", "[GoogleNet]")
+			if arguments.Jobs == 1 {
+				logging.Success("Starting image classification..", "[ResNet-50]")
+			} else {
+				logging.Success("Starting image classification with "+string(arguments.Jobs)+" parallel jobs..", "[ResNet-50]")
+			}
+			run(arguments)
 		}
-		runRecursively(arguments)
 	} else {
-		if arguments.Jobs == 1 {
-			logging.Success("Starting image classification..", "[GoogleNet]")
+		startGoogleNet(arguments)
+		if arguments.Recursive == true {
+			if arguments.Jobs == 1 {
+				logging.Success("Starting image classification recursively..", "[GoogleNet]")
+			} else {
+				logging.Success("Starting image classification recursively with "+string(arguments.Jobs)+" parallel jobs..", "[GoogleNet]")
+			}
+			runRecursively(arguments)
 		} else {
-			logging.Success("Starting image classification with "+string(arguments.Jobs)+" parallel jobs..", "[GoogleNet]")
+			if arguments.Jobs == 1 {
+				logging.Success("Starting image classification..", "[GoogleNet]")
+			} else {
+				logging.Success("Starting image classification with "+string(arguments.Jobs)+" parallel jobs..", "[GoogleNet]")
+			}
+			run(arguments)
 		}
-		run(arguments)
 	}
 	color.Println(color.Cyan("Done in ") + color.Yellow(time.Since(start)) + color.Cyan("!"))
 }

@@ -39,7 +39,7 @@ chmod +x deepsort
 
 # Usage
 
-Right now, DeepSort doesnt support a lot of different parameters, you're obliged to fill two of them:
+DeepSort support few different parameters, you're obliged to fill two of them:
 `--url` or `-u` that correspond to the URL of your DeepDetect server.
 `--input` or `-i` that correspond to your local folder full of images.
 
@@ -49,7 +49,8 @@ For more informations, refeer to the helper:
 
 [-u|--url] is required
 usage: deepsort [-h|--help] -u|--url "<value>" -i|--input "<value>"
-                [-R|--recursive] [-j|--jobs <integer>] [-d|--dry-run]
+                [-n|--network (resnet-50|googlenet)] [-R|--recursive]
+                [-j|--jobs <integer>] [-d|--dry-run]
 
                 AI powered image tagger backed by DeepDetect
 
@@ -58,6 +59,8 @@ Arguments:
   -h  --help       Print help information
   -u  --url        URL of your DeepDetect instance (i.e: http://localhost:8080)
   -i  --input      Your input folder.
+  -n  --network    The pre-trained deep neural network you want to use, can be
+                   resnet-50 or googlenet. Default: resnet-50
   -R  --recursive  Process files recursively.
   -j  --jobs       Number of parallel jobs. Default: 1
   -d  --dry-run    Just classify images and return results, do not apply.

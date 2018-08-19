@@ -16,7 +16,32 @@ func googleNetClassification(path string, arguments *Arguments, wg *sync.WaitGro
 	defer wg.Done()
 	url := arguments.URL + "/predict"
 	path, _ = filepath.Abs(path)
-	var jsonStr = []byte(`{"service":"deepsort-googlenet","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + path + `"]}`)
+	var jsonStr = []byte(`{"service":"deepsort-resnet","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + path + `"]}`)
+	// DEBUG
+	//fmt.Println("Request: " + string(jsonStr))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+	req.Close = true
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		logging.Error("Unable to classify this file.", "["+filepath.Base(path)+"]")
+		os.Exit(1)
+	}
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	parsedResponse := parseResponse(body)
+	color.Println(color.Yellow("[") + color.Cyan(filepath.Base(path)) + color.Yellow("]") + color.Yellow(" Response: ") + color.Green(parsedResponse))
+	if arguments.DryRun != true {
+		renameFile(path, arguments, parsedResponse)
+	}
+}
+
+func resNet50Classification(path string, arguments *Arguments, wg *sync.WaitGroup) {
+	defer wg.Done()
+	url := arguments.URL + "/predict"
+	path, _ = filepath.Abs(path)
+	var jsonStr = []byte(`{"service":"deepsort-resnet-50","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + path + `"]}`)
 	// DEBUG
 	//fmt.Println("Request: " + string(jsonStr))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))

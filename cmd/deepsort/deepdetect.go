@@ -31,3 +31,27 @@ func startGoogleNet(arguments *Arguments) {
 		logging.Success("Successfully started the image classification service.", "[GoogleNet]")
 	}
 }
+
+func startResNet50(arguments *Arguments) {
+	// Starting the image classification service
+	logging.Success("Starting the classification service..", "[ResNet-50]")
+	url := arguments.URL + "/services/deepsort-resnet-50"
+	var jsonStr = []byte(`{"mllib":"caffe","description":"DeepSort-ResNet-50","type":"supervised","parameters":{"input":{"connector":"image"},"mllib":{"nclasses":1000}},"model":{"repository":"/opt/models/resnet_50/"}}`)
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonStr))
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		logging.Error("Error while starting the classification service, please check if DeepDetect is running.", "[ResNet-50]")
+		os.Exit(1)
+	}
+	defer resp.Body.Close()
+	if resp.Status != "201 Created" && resp.Status != "500 Internal Server Error" {
+		logging.Error("Error while starting the classification service, please check if DeepDetect is running.", "[ResNet-50]")
+		os.Exit(1)
+	}
+	if resp.Status == "500 Internal Server Error" {
+		logging.Success("Looks like you already have the deepsort-googlenet service started, no need to create a new one.", "[ResNet-50]")
+	} else {
+		logging.Success("Successfully started the image classification service.", "[ResNet-50]")
+	}
+}

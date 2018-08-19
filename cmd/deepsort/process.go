@@ -34,7 +34,11 @@ func run(arguments *Arguments) {
 		if filetype.IsImage(buf) {
 			count++
 			wg.Add(1)
-			go googleNetClassification(path, arguments, &wg)
+			if arguments.Network == "resnet-50" {
+				go resNet50Classification(path, arguments, &wg)
+			} else {
+				go googleNetClassification(path, arguments, &wg)
+			}
 			if count == arguments.Jobs {
 				wg.Wait()
 				count = 0
@@ -53,24 +57,27 @@ func runRecursively(arguments *Arguments) ([]string, error) {
 		fileList = append(fileList, path)
 		return err
 	})
-
 	if e != nil {
 		logging.Error("Unable to process this directory.", "["+arguments.Input+"]")
 		os.Exit(1)
 	}
 
+	// Process files in the input folder
 	for _, file := range fileList {
 		buf, _ := ioutil.ReadFile(file)
 		if filetype.IsImage(buf) {
 			count++
 			wg.Add(1)
-			go googleNetClassification(file, arguments, &wg)
+			if arguments.Network == "resnet-50" {
+				go resNet50Classification(file, arguments, &wg)
+			} else {
+				go googleNetClassification(file, arguments, &wg)
+			}
 		}
 		if count == arguments.Jobs {
 			wg.Wait()
 			count = 0
 		}
 	}
-
 	return fileList, nil
 }
