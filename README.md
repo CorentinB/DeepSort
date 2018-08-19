@@ -38,3 +38,9 @@ To start the tagging:
 # (Really really quick) Benchmark
 
 Tested on 605 files, it took 11m18s on an i7 7700K.
+
+# Todo list
+
+- [ ] Getting docker out of the loop (each user install his own DeepDetect)
+- [ ] ResNet 50 integration
+- [ ] XMP metadata writing
