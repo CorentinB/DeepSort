@@ -9,8 +9,9 @@ import (
 )
 
 type Arguments struct {
-	Input string
-	URL   string
+	Input  string
+	URL    string
+	DryRun bool
 }
 
 func main() {

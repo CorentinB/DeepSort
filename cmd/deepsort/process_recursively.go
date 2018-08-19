@@ -26,7 +26,7 @@ func runRecursively(arguments *Arguments) ([]string, error) {
 	for _, file := range fileList {
 		buf, _ := ioutil.ReadFile(file)
 		if filetype.IsImage(buf) {
-			getClass(file, arguments)
+			googleNetClassification(file, arguments)
 		}
 	}
 

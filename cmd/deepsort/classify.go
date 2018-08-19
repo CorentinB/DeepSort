@@ -11,10 +11,10 @@ import (
 	"github.com/labstack/gommon/color"
 )
 
-func getClass(path string, arguments *Arguments) {
+func googleNetClassification(path string, arguments *Arguments) {
 	url := arguments.URL + "/predict"
 	path, _ = filepath.Abs(path)
-	var jsonStr = []byte(`{"service":"imageserv","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + path + `"]}`)
+	var jsonStr = []byte(`{"service":"deepsort-googlenet","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + path + `"]}`)
 	// DEBUG
 	//fmt.Println("Request: " + string(jsonStr))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
