@@ -8,7 +8,7 @@ import (
 	"github.com/akamensky/argparse"
 )
 
-func argumentParsing(args []string, argument *Arguments) {
+func argumentParsing(args []string, arguments *Arguments) {
 	// Create new parser object
 	parser := argparse.NewParser("deepsort", "AI powered image tagger backed by DeepDetect")
 	// Create flags
@@ -29,10 +29,10 @@ func argumentParsing(args []string, argument *Arguments) {
 	// Handle the input flag
 	inputFolder, _ := filepath.Abs(*input)
 	// Finally save the collected flags
-	argument.Network = *network
-	argument.Jobs = *jobs
-	argument.DryRun = *dryRun
-	argument.Recursive = *recursive
-	argument.Input = inputFolder
-	argument.URL = *URL
+	arguments.Network = *network
+	arguments.Jobs = *jobs
+	arguments.DryRun = *dryRun
+	arguments.Recursive = *recursive
+	arguments.Input = inputFolder
+	arguments.URL = *URL
 }

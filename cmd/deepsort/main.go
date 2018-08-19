@@ -15,11 +15,13 @@ type Arguments struct {
 	Recursive bool
 	Jobs      int
 	Network   string
+	CountDone int
 }
 
 func main() {
 	start := time.Now()
 	arguments := new(Arguments)
+	arguments.CountDone = 0
 	arguments.Jobs = 1
 	argumentParsing(os.Args, arguments)
 	if arguments.Network == "resnet-50" {
@@ -28,14 +30,18 @@ func main() {
 			if arguments.Jobs == 1 {
 				logging.Success("Starting image classification recursively..", "[ResNet-50]")
 			} else {
-				logging.Success("Starting image classification recursively with "+string(arguments.Jobs)+" parallel jobs..", "[ResNet-50]")
+				logging.Success("Starting image classification recursively with "+
+					color.Green(arguments.Jobs)+
+					color.Yellow(" parallel jobs.."), "[ResNet-50]")
 			}
 			runRecursively(arguments)
 		} else {
 			if arguments.Jobs == 1 {
 				logging.Success("Starting image classification..", "[ResNet-50]")
 			} else {
-				logging.Success("Starting image classification with "+string(arguments.Jobs)+" parallel jobs..", "[ResNet-50]")
+				logging.Success("Starting image classification with "+
+					color.Green(arguments.Jobs)+
+					color.Yellow(" parallel jobs.."), "[ResNet-50]")
 			}
 			run(arguments)
 		}
@@ -45,17 +51,24 @@ func main() {
 			if arguments.Jobs == 1 {
 				logging.Success("Starting image classification recursively..", "[GoogleNet]")
 			} else {
-				logging.Success("Starting image classification recursively with "+string(arguments.Jobs)+" parallel jobs..", "[GoogleNet]")
+				logging.Success("Starting image classification recursively with "+
+					color.Green(arguments.Jobs)+
+					color.Yellow(" parallel jobs.."), "[GoogleNet]")
 			}
 			runRecursively(arguments)
 		} else {
 			if arguments.Jobs == 1 {
 				logging.Success("Starting image classification..", "[GoogleNet]")
 			} else {
-				logging.Success("Starting image classification with "+string(arguments.Jobs)+" parallel jobs..", "[GoogleNet]")
+				logging.Success("Starting image classification with "+
+					color.Green(arguments.Jobs)+
+					color.Yellow(" parallel jobs.."), "[GoogleNet]")
 			}
 			run(arguments)
 		}
 	}
-	color.Println(color.Cyan("Done in ") + color.Yellow(time.Since(start)) + color.Cyan("!"))
+	logging.Success(color.Yellow(arguments.CountDone)+
+		color.Cyan(" pictures sorted in ")+
+		color.Yellow(time.Since(start))+
+		color.Cyan("!"), color.Cyan("Congrats,"))
 }

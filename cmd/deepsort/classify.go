@@ -45,6 +45,7 @@ func googleNetClassification(path string, arguments *Arguments, wg *sync.WaitGro
 	if arguments.DryRun != true {
 		renameFile(path, arguments, parsedResponse)
 	}
+	arguments.CountDone++
 }
 
 func resNet50Classification(path string, arguments *Arguments, wg *sync.WaitGroup) {
@@ -80,4 +81,5 @@ func resNet50Classification(path string, arguments *Arguments, wg *sync.WaitGrou
 	if arguments.DryRun != true {
 		renameFile(path, arguments, parsedResponse)
 	}
+	arguments.CountDone++
 }
