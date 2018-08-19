@@ -42,6 +42,7 @@ Right now, DeepSort doesnt support a lot of different parameters, you're obliged
 For more informations, refeer to the helper:
 ```
 ./deepsort --help
+
 [-u|--url] is required
 usage: deepsort [-h|--help] -u|--url "<value>" -i|--input "<value>"
                 [-d|--dry-run]
