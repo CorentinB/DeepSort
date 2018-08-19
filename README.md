@@ -24,11 +24,7 @@ Example:
 docker run -d -p 8080:8080 -v /home/corentin/Images:/home/corentin/Images beniz/deepdetect_cpu
 ```
 
-If you prefeer using DeepDetect without Docker, refeer to the official documentation here:
-
-https://github.com/jolibrain/deepdetect/blob/master/README.md
-
-You'll find how to install it without Docker.
+Right now, the only supported installation of DeepDetect that works with DeepSort is the deepdetect_cpu container.
 
 Then, download the latest DeepSort release from https://github.com/CorentinB/DeepSort/releases
 
