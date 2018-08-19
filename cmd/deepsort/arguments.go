@@ -27,6 +27,7 @@ func argumentParsing(args []string, argument *Arguments) {
 	inputFolder, _ := filepath.Abs(*input)
 	// Finally save the collected flags
 	argument.DryRun = *dryRun
+	fmt.Println(argument.DryRun)
 	argument.Input = inputFolder
 	argument.URL = *URL
 }

@@ -30,5 +30,7 @@ func googleNetClassification(path string, arguments *Arguments) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	parsedResponse := parseResponse(body)
 	color.Println(color.Yellow("[") + color.Cyan(filepath.Base(path)) + color.Yellow("]") + color.Yellow(" Response: ") + color.Green(parsedResponse))
-	renameFile(path, arguments, parsedResponse)
+	if arguments.DryRun != true {
+		renameFile(path, arguments, parsedResponse)
+	}
 }

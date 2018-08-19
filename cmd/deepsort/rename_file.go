@@ -13,7 +13,6 @@ func renameFile(path string, arguments *Arguments, response string) {
 	dirPath := filepath.Dir(absPath)
 	extension := path[len(path)-4:]
 	newName := response + "_" + hash + extension
-
 	err := os.Rename(absPath, dirPath+"/"+newName)
 	if err != nil {
 		logging.Error("Unable to rename this file.", "["+filepath.Base(path)+"]")
