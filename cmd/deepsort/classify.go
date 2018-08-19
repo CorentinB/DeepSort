@@ -31,7 +31,17 @@ func googleNetClassification(path string, arguments *Arguments, wg *sync.WaitGro
 
 	body, _ := ioutil.ReadAll(resp.Body)
 	parsedResponse := parseResponse(body)
-	color.Println(color.Yellow("[") + color.Cyan(filepath.Base(path)) + color.Yellow("]") + color.Yellow(" Response: ") + color.Green(parsedResponse))
+	if len(filepath.Base(path)) > 17 {
+		name := filepath.Base(path)
+		truncatedName := name[0:5] + "..." + name[len(name)-9:]
+		logging.Success(color.Yellow("[")+color.Cyan(truncatedName)+
+			color.Yellow("]")+color.Yellow(" Response: ")+
+			color.Green(parsedResponse), "[GoogleNet]")
+	} else {
+		logging.Success(color.Yellow("[")+color.Cyan(filepath.Base(path))+
+			color.Yellow("]")+color.Yellow(" Response: ")+
+			color.Green(parsedResponse), "[GoogleNet]")
+	}
 	if arguments.DryRun != true {
 		renameFile(path, arguments, parsedResponse)
 	}
@@ -56,7 +66,17 @@ func resNet50Classification(path string, arguments *Arguments, wg *sync.WaitGrou
 
 	body, _ := ioutil.ReadAll(resp.Body)
 	parsedResponse := parseResponse(body)
-	color.Println(color.Yellow("[") + color.Cyan(filepath.Base(path)) + color.Yellow("]") + color.Yellow(" Response: ") + color.Green(parsedResponse))
+	if len(filepath.Base(path)) > 17 {
+		name := filepath.Base(path)
+		truncatedName := name[0:5] + "..." + name[len(name)-9:]
+		logging.Success(color.Yellow("[")+color.Cyan(truncatedName)+
+			color.Yellow("]")+color.Yellow(" Response: ")+
+			color.Green(parsedResponse), "[ResNet-50]")
+	} else {
+		logging.Success(color.Yellow("[")+color.Cyan(filepath.Base(path))+
+			color.Yellow("]")+color.Yellow(" Response: ")+
+			color.Green(parsedResponse), "[ResNet-50]")
+	}
 	if arguments.DryRun != true {
 		renameFile(path, arguments, parsedResponse)
 	}
