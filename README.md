@@ -66,10 +66,6 @@ Arguments:
   -d  --dry-run    Just classify images and return results, do not apply.
 ```
 
-# (Really really quick) Benchmark
-
-Tested on 605 files, it took 11m18s on an i7 7700K.
-
 # Todo list
 
 - [X] Getting docker out of the loop (each user install his own DeepDetect)
