@@ -67,5 +67,6 @@ Arguments:
 - [X] Getting docker out of the loop (each user install his own DeepDetect)
 - [X] ResNet 50 integration
 - [ ] Output folder (copy and not rename)
+- [ ] NSFW tagging (Yahoo open_nsfw)
 - [ ] XMP metadata writing
 - [ ] GPU support
