@@ -14,6 +14,7 @@ func argumentParsing(args []string, arguments *Arguments) {
 	// Create flags
 	URL := parser.String("u", "url", &argparse.Options{Required: true, Help: "URL of your DeepDetect instance (i.e: http://localhost:8080)"})
 	input := parser.String("i", "input", &argparse.Options{Required: true, Help: "Your input folder."})
+	//output := parser.String("o", "output", &argparse.Options{Required: false, Help: "Your output folder, if output is set, original files will not be renamed, but the renamed version will be copied in the output folder."})
 	network := parser.Selector("n", "network", []string{"resnet-50", "googlenet"}, &argparse.Options{Required: false, Help: "The pre-trained deep neural network you want to use, can be resnet-50 or googlenet", Default: "resnet-50"})
 	recursive := parser.Flag("R", "recursive", &argparse.Options{Required: false, Help: "Process files recursively."})
 	jobs := parser.Int("j", "jobs", &argparse.Options{Required: false, Help: "Number of parallel jobs", Default: 1})
@@ -26,8 +27,10 @@ func argumentParsing(args []string, arguments *Arguments) {
 		fmt.Print(parser.Usage(err))
 		os.Exit(0)
 	}
-	// Handle the input flag
+	// Handle the input/output flags
 	inputFolder, _ := filepath.Abs(*input)
+	//arguments.Output = outputFolder
+	//arguments.OutputChoice = true
 	// Finally save the collected flags
 	arguments.Network = *network
 	arguments.Jobs = *jobs

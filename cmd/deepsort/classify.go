@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -43,7 +44,11 @@ func googleNetClassification(path string, arguments *Arguments, wg *sync.WaitGro
 			color.Green(parsedResponse), "[GoogleNet]")
 	}
 	if arguments.DryRun != true {
-		renameFile(path, arguments, parsedResponse)
+		if isValid(arguments.Output) == false {
+			renameFile(path, arguments, parsedResponse)
+		} else {
+			fmt.Println("Output selected")
+		}
 	}
 	arguments.CountDone++
 }
@@ -79,7 +84,14 @@ func resNet50Classification(path string, arguments *Arguments, wg *sync.WaitGrou
 			color.Green(parsedResponse), "[ResNet-50]")
 	}
 	if arguments.DryRun != true {
-		renameFile(path, arguments, parsedResponse)
+		if isValid(arguments.Output) == false &&
+			arguments.OutputChoice == false {
+			renameFile(path, arguments, parsedResponse)
+		} else if arguments.OutputChoice == true &&
+			isValid(arguments.Output) == false {
+			logging.Error("Wrong output folder.", "")
+			os.Exit(1)
+		}
 	}
 	arguments.CountDone++
 }

@@ -8,14 +8,17 @@ import (
 	"github.com/labstack/gommon/color"
 )
 
+// Arguments store flags values
 type Arguments struct {
-	Input     string
-	URL       string
-	DryRun    bool
-	Recursive bool
-	Jobs      int
-	Network   string
-	CountDone int
+	Input        string
+	Output       string
+	OutputChoice bool
+	URL          string
+	DryRun       bool
+	Recursive    bool
+	Jobs         int
+	Network      string
+	CountDone    int
 }
 
 func main() {
@@ -23,6 +26,7 @@ func main() {
 	arguments := new(Arguments)
 	arguments.CountDone = 0
 	arguments.Jobs = 1
+	arguments.OutputChoice = false
 	argumentParsing(os.Args, arguments)
 	if arguments.Network == "resnet-50" {
 		startResNet50(arguments)
