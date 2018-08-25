@@ -14,14 +14,7 @@ Because sometimes, you have folders full of badly named pictures, and you want t
 You need DeepDetect installed, the easiest way is using docker:
 ```
 docker pull beniz/deepdetect_cpu
-docker run -d -p 8080:8080 -v /path/to/images:/path/to/images beniz/deepdetect_cpu
-```
-
-PLEASE NOTE THAT THE PATH IN THE HOST SHOULD BE THE SAME IN THE CONTAINER!
-
-Example:
-```
-docker run -d -p 8080:8080 -v /home/corentin/Images:/home/corentin/Images beniz/deepdetect_cpu
+docker run -d -p 8080:8080 beniz/deepdetect_cpu
 ```
 
 Right now, the only supported installation of DeepDetect that works with DeepSort is the deepdetect_cpu container.

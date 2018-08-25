@@ -15,8 +15,8 @@ import (
 func googleNetClassification(path string, arguments *Arguments, wg *sync.WaitGroup) {
 	defer wg.Done()
 	url := arguments.URL + "/predict"
-	path, _ = filepath.Abs(path)
-	var jsonStr = []byte(`{"service":"deepsort-resnet","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + path + `"]}`)
+	dataStr := readFile(path)
+	var jsonStr = []byte(`{"service":"deepsort-resnet","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + dataStr + `"]}`)
 	// DEBUG
 	//fmt.Println("Request: " + string(jsonStr))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
@@ -51,8 +51,8 @@ func googleNetClassification(path string, arguments *Arguments, wg *sync.WaitGro
 func resNet50Classification(path string, arguments *Arguments, wg *sync.WaitGroup) {
 	defer wg.Done()
 	url := arguments.URL + "/predict"
-	path, _ = filepath.Abs(path)
-	var jsonStr = []byte(`{"service":"deepsort-resnet-50","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + path + `"]}`)
+	dataStr := readFile(path)
+	var jsonStr = []byte(`{"service":"deepsort-resnet-50","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + dataStr + `"]}`)
 	// DEBUG
 	//fmt.Println("Request: " + string(jsonStr))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
