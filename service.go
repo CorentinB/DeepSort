@@ -5,19 +5,28 @@ import (
 	"bytes"
 )
 
+// ClassificationService describes a DeepDetect service
+// that can be used to classify images.
+// ClassificationService.Load() must be called before usage.
 type ClassificationService struct{
+	// The HTTP client used for all API calls
 	Conn *http.Client
-	Url  string
-	Id   string
+	// The base URL of the API
+	URL  string
+	// ID used for registering it in DeepDetect
+	ID   string
+	// Tag used for logging
 	Tag  string
+	// Description used for DeepDetect
 	Description string
 }
 
-// Connects to DeepDetect and loads a classification service
-// from the specified repository.
+// Load connects to DeepDetect and loads a
+// classification service from the specified repository
+// using the specified values of the receiving object.
 func (c *ClassificationService) Load(repo string) error {
 	// Starting the image classification service
-	url := c.Url + "/services/" + c.Id
+	url := c.URL + "/services/" + c.ID
 
 	var jsonStr = []byte(`{
 		"mllib": "caffe",

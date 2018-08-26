@@ -10,12 +10,12 @@ func startService(c *DeepSort.ClassificationService) {
 
 	switch arguments.Network {
 	case "resnet-50":
-		c.Id  = "deepsort-resnet-50"
+		c.ID = "deepsort-resnet-50"
 		c.Tag = "[ResNet-50]"
 		c.Description = "DeepSort-ResNet-50"
 		repo = "/opt/models/resnet_50/"
 	case "googlenet":
-		c.Id = "deepsort-googlenet"
+		c.ID = "deepsort-googlenet"
 		c.Tag = "[GoogleNet]"
 		c.Description = "DeepSort-GoogleNet"
 		repo = "/opt/models/ggnet/"
@@ -31,7 +31,7 @@ func startService(c *DeepSort.ClassificationService) {
 			"image classification service.", c.Tag)
 
 	case DeepSort.ErrAlreadyRunning:
-		logSuccess("Looks like you already have the " + c.Id +
+		logSuccess("Looks like you already have the " + c.ID+
 			" service started, no need to create a new one.", c.Tag)
 
 	case DeepSort.ErrStartFailed: fallthrough

@@ -17,7 +17,7 @@ func main() {
 	// Start a new classification service
 	var c = DeepSort.ClassificationService{
 		Conn: &http.Client{},
-		Url: arguments.URL,
+		URL:  arguments.URL,
 	}
 	startService(&c)
 

@@ -11,8 +11,10 @@ var replaceSpace = strings.NewReplacer(" ", "_")
 var replaceComma = strings.NewReplacer(",", "")
 var replaceDoubleQuote = strings.NewReplacer("\"", "")
 
-// Returns a new file name for the image along
-// with the tag portion of the new name
+// FormatFileName takes an old path of an image,
+// its content as bytes and its tags (e.g. from Classify)
+// and returns a new file name for an image along with
+// the formatted tag portion of the new name
 func FormatFileName(path string, image []byte, tags []string) (fullPath string, tagPart string) {
 	tagPart = formatTags(tags)
 

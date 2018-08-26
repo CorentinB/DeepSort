@@ -11,13 +11,13 @@ import (
 // Runs the image through the classification engine and
 // returns a slice of tags
 func (c *ClassificationService) Classify(image []byte) ([]string, error) {
-	url := c.Url + "/predict"
+	url := c.URL + "/predict"
 
 	// Send image over as base64
 	dataStr := base64.StdEncoding.EncodeToString(image)
 
 	req, err := http.NewRequest("POST", url, strings.NewReader(`{
-		"service": "` + c.Id + `",
+		"service": "` + c.ID+ `",
 		"parameters": {
 			"input": {
 				"width":224,
@@ -35,8 +35,8 @@ func (c *ClassificationService) Classify(image []byte) ([]string, error) {
 
 	body, _ := ioutil.ReadAll(resp.Body)
 
-	tagsJson, _ := jq.Parse(".body.predictions.[0].classes.[0].cat")
-	value, _ := tagsJson.Apply(body)
+	tagsJSON, _ := jq.Parse(".body.predictions.[0].classes.[0].cat")
+	value, _ := tagsJSON.Apply(body)
 	class := strings.Split(string(value), " ")
 	class = class[1:]
 
