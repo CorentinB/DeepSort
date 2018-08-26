@@ -2,22 +2,25 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
 	"sync"
 
+	"crypto/md5"
+	"encoding/base64"
+	"encoding/hex"
+
 	"github.com/CorentinB/DeepSort/pkg/logging"
 	"github.com/labstack/gommon/color"
 )
 
-func googleNetClassification(path string, arguments *Arguments, wg *sync.WaitGroup) {
+func googleNetClassification(path string, content []byte, arguments *Arguments, wg *sync.WaitGroup) {
 	defer wg.Done()
 	url := arguments.URL + "/predict"
-	path, _ = filepath.Abs(path)
-	var jsonStr = []byte(`{"service":"deepsort-resnet","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + path + `"]}`)
+	dataStr := base64.StdEncoding.EncodeToString(content)
+	var jsonStr = []byte(`{"service":"deepsort-resnet","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + dataStr + `"]}`)
 	// DEBUG
 	//fmt.Println("Request: " + string(jsonStr))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
@@ -44,20 +47,18 @@ func googleNetClassification(path string, arguments *Arguments, wg *sync.WaitGro
 			color.Green(parsedResponse), "[GoogleNet]")
 	}
 	if arguments.DryRun != true {
-		if isValid(arguments.Output) == false {
-			renameFile(path, arguments, parsedResponse)
-		} else {
-			fmt.Println("Output selected")
-		}
+		hashBytes := md5.Sum(content)
+		hash := hex.EncodeToString(hashBytes[:])
+		renameFile(path, hash, arguments, parsedResponse)
 	}
 	arguments.CountDone++
 }
 
-func resNet50Classification(path string, arguments *Arguments, wg *sync.WaitGroup) {
+func resNet50Classification(path string, content []byte, arguments *Arguments, wg *sync.WaitGroup) {
 	defer wg.Done()
 	url := arguments.URL + "/predict"
-	path, _ = filepath.Abs(path)
-	var jsonStr = []byte(`{"service":"deepsort-resnet-50","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + path + `"]}`)
+	dataStr := base64.StdEncoding.EncodeToString(content)
+	var jsonStr = []byte(`{"service":"deepsort-resnet-50","parameters":{"input":{"width":224,"height":224},"output":{"best":1},"mllib":{"gpu":false}},"data":["` + dataStr + `"]}`)
 	// DEBUG
 	//fmt.Println("Request: " + string(jsonStr))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
@@ -84,14 +85,9 @@ func resNet50Classification(path string, arguments *Arguments, wg *sync.WaitGrou
 			color.Green(parsedResponse), "[ResNet-50]")
 	}
 	if arguments.DryRun != true {
-		if isValid(arguments.Output) == false &&
-			arguments.OutputChoice == false {
-			renameFile(path, arguments, parsedResponse)
-		} else if arguments.OutputChoice == true &&
-			isValid(arguments.Output) == false {
-			logging.Error("Wrong output folder.", "")
-			os.Exit(1)
-		}
+		hashBytes := md5.Sum(content)
+		hash := hex.EncodeToString(hashBytes[:])
+		renameFile(path, hash, arguments, parsedResponse)
 	}
 	arguments.CountDone++
 }
