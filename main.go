@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"log"
 	"path/filepath"
-	"github.com/CorentinB/DeepSort"
 )
 
 func main() {
@@ -15,7 +14,7 @@ func main() {
 	argumentParsing(os.Args)
 
 	// Start a new classification service
-	var c = DeepSort.ClassificationService{
+	var c = ClassificationService{
 		Conn: &http.Client{},
 		URL:  arguments.URL,
 	}

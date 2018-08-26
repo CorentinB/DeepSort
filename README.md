@@ -21,9 +21,9 @@ Right now, the only supported installation of DeepDetect that works with DeepSor
 
 Then, download the latest DeepSort release from https://github.com/CorentinB/DeepSort/releases
 
-Unzip your release, rename it `deepsort` and make it executable with:
+Unzip your release, rename it `DeepSort` and make it executable with:
 ```
-chmod +x deepsort
+chmod +x DeepSort
 ```
 
 # Usage
@@ -34,10 +34,10 @@ DeepSort support few different parameters, you're obliged to fill two of them:
 
 For more informations, refeer to the helper:
 ```
-./deepsort --help
+./DeepSort --help
 
 [-u|--url] is required
-usage: deepsort [-h|--help] -u|--url "<value>" -i|--input "<value>"
+usage: DeepSort [-h|--help] -u|--url "<value>" -i|--input "<value>"
                 [-n|--network (resnet-50|googlenet)] [-R|--recursive]
                 [-j|--jobs <integer>] [-d|--dry-run]
 

@@ -1,4 +1,4 @@
-package DeepSort
+package main
 
 import "errors"
 
