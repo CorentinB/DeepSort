@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func process(c *ClassificationService, fileList []string) {
+func process(c *ClassificationService, fileList []string) (processed int) {
 	// Process files in the input folder
 	for _, file := range fileList {
 		buf, _ := ioutil.ReadFile(file)
@@ -19,7 +19,10 @@ func process(c *ClassificationService, fileList []string) {
 				os.Exit(1)
 			}
 
-			renameFile(c, file, buf, tags)
+			commitFile(c, file, buf, tags)
+			processed++
 		}
 	}
+
+	return processed
 }

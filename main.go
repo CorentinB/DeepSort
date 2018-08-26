@@ -58,11 +58,16 @@ func main() {
 			logError("Unable to process this directory.", "["+arguments.Input+"]")
 			os.Exit(1)
 		}
+
+		// Prefix input path to file names
+		for i, name := range fileList {
+			fileList[i] = filepath.Join(arguments.Input, name)
+		}
 	}
 
-	process(&c, fileList)
+	n := process(&c, fileList)
 
-	logSuccess(color.Yellow(len(fileList))+
+	logSuccess(color.Yellow(n)+
 		color.Cyan(" pictures sorted in ")+
 		color.Yellow(time.Since(start))+
 		color.Cyan("!"), color.Cyan("Congrats,"))

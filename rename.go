@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/gommon/color"
 	"os"
 	"bytes"
+	"io"
 )
 
 var replaceSpace = strings.NewReplacer(" ", "_")
@@ -18,16 +19,13 @@ var replaceDoubleQuote = strings.NewReplacer("\"", "")
 // its content as bytes and its tags (e.g. from Classify)
 // and returns a new file name for an image along with
 // the formatted tag portion of the new name
-func FormatFileName(path string, image []byte, tags []string) (fullPath string, tagPart string) {
+func FormatFileName(oldName string, image []byte, tags []string) (newName string, tagPart string) {
 	tagPart = formatTags(tags)
 
 	hashBytes := md5.Sum(image)
 	hash := hex.EncodeToString(hashBytes[:])
-	absPath, _ := filepath.Abs(path)
-	dirPath := filepath.Dir(absPath)
-	extension := path[len(path)-4:]
-	newName := tagPart + "_" + hash + extension
-	fullPath = filepath.Join(dirPath, newName)
+	extension := oldName[len(oldName)-4:]
+	newName = tagPart + "_" + hash + extension
 
 	return
 }
@@ -41,21 +39,21 @@ func formatTags(class []string) string {
 	return result
 }
 
-func renameFile(c *ClassificationService,
+// commitFile copies or renames the target image
+// to its new path
+func commitFile(c *ClassificationService,
 	path string, image []byte, tags []string) {
 
 	// Generate file name
-	newPath, tagPart := FormatFileName(path, image, tags)
-
-	name := filepath.Base(path)
+	newName, tagPart := FormatFileName(path, image, tags)
 
 	// Log file name to console
-	if len(name) > 19 {
+	if len(newName) > 19 {
 		// File name is too long, truncate it
 		var message bytes.Buffer
 
 		// Write first and last path of the file name
-		truncatedName := name[0:5] + "…" + name[len(name)-9:]
+		truncatedName := newName[0:5] + "…" + newName[len(newName)-9:]
 		message.WriteString(color.Yellow("[") + color.Cyan(truncatedName) + color.Yellow("]"))
 
 		// Write tags
@@ -67,10 +65,10 @@ func renameFile(c *ClassificationService,
 		var message bytes.Buffer
 
 		// Write file name
-		message.WriteString(color.Yellow("[") + color.Cyan(name) + color.Yellow("]"))
+		message.WriteString(color.Yellow("[") + color.Cyan(newName) + color.Yellow("]"))
 
 		// Pad to 19 characters
-		for i := 15 - len(name); i > 0; i-- {
+		for i := 15 - len(newName); i > 0; i-- {
 			message.WriteByte(' ')
 		}
 
@@ -80,12 +78,66 @@ func renameFile(c *ClassificationService,
 		logSuccess(message.String(), c.Tag)
 	}
 
-	// Rename file
-	if !arguments.DryRun {
-		err := os.Rename(path, newPath)
-		if err != nil {
-			logError("Unable to rename this file.", "["+filepath.Base(path)+"]")
-			os.Exit(1)
-		}
+	// Don't do anything if it's a dry run
+	if arguments.DryRun { return }
+
+	// Copy or rename the file
+	if arguments.Output != "" {
+		copyFile(path, newName, image)
+	} else {
+		renameFile(path, newName)
+	}
+}
+
+// copyFile copies the image to a new path
+func copyFile(oldPath string, newName string, image []byte) {
+	// Get relative path of image to input path
+	relPath, err := filepath.Rel(arguments.Input, oldPath)
+	if err != nil { panic(err) }
+
+	// Get relative directory of the image
+	relDir := filepath.Dir(relPath)
+
+	// Get new target directory of the image
+	newDir := filepath.Join(arguments.Output, relDir)
+
+	// Create directory if it doesn't exist
+	err = os.MkdirAll(newDir, 0755)
+	if err != nil {
+		logError("Unable to create target directory this file.", "["+relPath+"]")
+		os.Exit(1)
+	}
+
+	// Create new image file
+	newPath := filepath.Join(newDir, newName)
+
+	newImage, err := os.OpenFile(newPath,
+		os.O_CREATE | os.O_EXCL | os.O_WRONLY, 0644)
+
+	if err != nil {
+		logError("Unable to open this file.", "["+newPath+"]")
+		os.Exit(1)
+	}
+
+	defer newImage.Close()
+
+	// Copy
+	_, err = io.Copy(newImage, bytes.NewReader(image))
+
+	if err != nil {
+		logError("Failed to copy this file.", "["+newPath+"]")
+		os.Exit(1)
+	}
+}
+
+// renameFile renames the image
+func renameFile(oldPath string, newImage string) {
+	dir := filepath.Dir(oldPath)
+	newPath := filepath.Join(dir, newImage)
+
+	err := os.Rename(oldPath, newPath)
+	if err != nil {
+		logError("Unable to rename this file.", "["+filepath.Base(oldPath)+"]")
+		os.Exit(1)
 	}
 }
