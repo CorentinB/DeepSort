@@ -32,11 +32,11 @@ func main() {
 		}
 
 		// Open input folder
-		f, err := os.Open(arguments.Input)
-		if err != nil { log.Fatal(err) }
-		defer f.Close()
-		fileList, err = f.Readdirnames(-1)
-		if err != nil {
+		e := filepath.Walk(arguments.Input, func(path string, f os.FileInfo, err error) error {
+			fileList = append(fileList, path)
+			return err
+		})
+		if e != nil {
 			logError("Unable to process this directory.", "["+arguments.Input+"]")
 			os.Exit(1)
 		}
@@ -50,11 +50,11 @@ func main() {
 		}
 
 		// Open input folder
-		e := filepath.Walk(arguments.Input, func(path string, f os.FileInfo, err error) error {
-			fileList = append(fileList, path)
-			return err
-		})
-		if e != nil {
+		f, err := os.Open(arguments.Input)
+		if err != nil { log.Fatal(err) }
+		defer f.Close()
+		fileList, err = f.Readdirnames(-1)
+		if err != nil {
 			logError("Unable to process this directory.", "["+arguments.Input+"]")
 			os.Exit(1)
 		}
