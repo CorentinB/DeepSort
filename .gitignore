@@ -1,0 +1,8 @@
+# Executable builds
+/deepsort
+/cmd/deepsort/deepsort
+deepsort.exe
+
+# OS files
+desktop.ini
+.DS_Store
