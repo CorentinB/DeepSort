@@ -9,14 +9,17 @@ import (
 )
 
 var arguments = struct {
-	Input     string
-	URL       string
-	DryRun    bool
-	Recursive bool
-	Jobs      int
-	Network   string
+	Input        string
+	Output       string
+	OutputChoice bool
+	URL          string
+	DryRun       bool
+	Recursive    bool
+	Jobs         int
+	Network      string
 }{
 	// Default arguments
+	OutputChoice: false,
 	Jobs: 1,
 }
 
@@ -32,6 +35,12 @@ func argumentParsing(args []string) {
 	input := parser.String("i", "input", &argparse.Options{
 		Required: true,
 		Help: "Your input folder."})
+
+	//output := parser.String("o", "output", &argparse.Options{
+	//	Required: false,
+	//	Help: "Your output folder, if output is set, " +
+	//		"original files will not be renamed, " +
+	//		"but the renamed version will be copied in the output folder."})
 
 	network := parser.Selector("n", "network", []string{"resnet-50", "googlenet"}, &argparse.Options{
 		Required: false,
@@ -63,6 +72,8 @@ func argumentParsing(args []string) {
 
 	// Handle the input flag
 	inputFolder, _ := filepath.Abs(*input)
+	//arguments.Output = outputFolder
+	//arguments.OutputChoice = true
 	// Finally save the collected flags
 	arguments.Network = *network
 	arguments.Jobs = *jobs
