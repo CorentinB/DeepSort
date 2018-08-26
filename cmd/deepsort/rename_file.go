@@ -7,9 +7,8 @@ import (
 	"github.com/CorentinB/DeepSort/pkg/logging"
 )
 
-func renameFile(path string, arguments *Arguments, response string) {
+func renameFile(path string, hash string, arguments *Arguments, response string) {
 	absPath, _ := filepath.Abs(path)
-	hash := hashFileMD5(absPath)
 	dirPath := filepath.Dir(absPath)
 	extension := path[len(path)-4:]
 	newName := response + "_" + hash + extension

@@ -35,9 +35,9 @@ func run(arguments *Arguments) {
 			count++
 			wg.Add(1)
 			if arguments.Network == "resnet-50" {
-				go resNet50Classification(path, arguments, &wg)
+				go resNet50Classification(path, buf, arguments, &wg)
 			} else {
-				go googleNetClassification(path, arguments, &wg)
+				go googleNetClassification(path, buf, arguments, &wg)
 			}
 			if count == arguments.Jobs {
 				wg.Wait()
@@ -69,9 +69,9 @@ func runRecursively(arguments *Arguments) ([]string, error) {
 			count++
 			wg.Add(1)
 			if arguments.Network == "resnet-50" {
-				go resNet50Classification(file, arguments, &wg)
+				go resNet50Classification(file, buf, arguments, &wg)
 			} else {
-				go googleNetClassification(file, arguments, &wg)
+				go googleNetClassification(file, buf, arguments, &wg)
 			}
 		}
 		if count == arguments.Jobs {
