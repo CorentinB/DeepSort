@@ -17,7 +17,8 @@ docker pull beniz/deepdetect_cpu
 docker run -d -p 8080:8080 beniz/deepdetect_cpu
 ```
 
-Right now, the only supported installation of DeepDetect that works with DeepSort is the deepdetect_cpu container.
+Right now, the only supported installation of DeepDetect that works with DeepSort is the deepdetect_cpu container,
+because it contain the good path for the pre-installed `resnet-50` and `googlenet` models.
 
 Then, download the latest DeepSort release from https://github.com/CorentinB/DeepSort/releases
 
@@ -37,9 +38,9 @@ For more informations, refeer to the helper:
 ./DeepSort --help
 
 [-u|--url] is required
-usage: DeepSort [-h|--help] -u|--url "<value>" -i|--input "<value>"
-                [-n|--network (resnet-50|googlenet)] [-R|--recursive]
-                [-j|--jobs <integer>] [-d|--dry-run]
+usage: deepsort [-h|--help] -u|--url "<value>" -i|--input "<value>"
+                [-o|--output "<value>"] [-n|--network (resnet-50|googlenet)]
+                [-R|--recursive] [-j|--jobs <integer>] [-d|--dry-run]
 
                 AI powered image tagger backed by DeepDetect
 
@@ -48,6 +49,9 @@ Arguments:
   -h  --help       Print help information
   -u  --url        URL of your DeepDetect instance (i.e: http://localhost:8080)
   -i  --input      Your input folder.
+  -o  --output     Your output folder, if output is set, original files will
+                   not be renamed, but the renamed version will be copied in
+                   the output folder.
   -n  --network    The pre-trained deep neural network you want to use, can be
                    resnet-50 or googlenet. Default: resnet-50
   -R  --recursive  Process files recursively.
@@ -59,7 +63,7 @@ Arguments:
 
 - [X] Getting docker out of the loop (each user install his own DeepDetect)
 - [X] ResNet 50 integration
-- [ ] Output folder (copy and not rename)
+- [X] Output folder (copy and not rename)
 - [ ] NSFW tagging (Yahoo open_nsfw)
 - [ ] XMP metadata writing
 - [ ] GPU support
