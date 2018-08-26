@@ -8,6 +8,18 @@ import (
 	"github.com/akamensky/argparse"
 )
 
+var arguments = struct {
+	Input     string
+	URL       string
+	DryRun    bool
+	Recursive bool
+	Jobs      int
+	Network   string
+}{
+	// Default arguments
+	Jobs: 1,
+}
+
 func argumentParsing(args []string) {
 	// Create new parser object
 	parser := argparse.NewParser("deepsort", "AI powered image tagger backed by DeepDetect")

@@ -1,24 +1,20 @@
-package main
+package DeepSort
 
 import (
-	"io/ioutil"
-	"net/http"
-	"os"
-	"path/filepath"
 	"encoding/base64"
+	"net/http"
 	"strings"
+	"io/ioutil"
 	"github.com/savaki/jq"
-	"sync"
 )
 
 // Runs the image through the classification engine and
 // returns a slice of tags
-func (c *ClassificationService) Classify(path string, content []byte, wg *sync.WaitGroup) []string {
-	defer wg.Done()
-	url := arguments.URL + "/predict"
+func (c *ClassificationService) Classify(image []byte) ([]string, error) {
+	url := c.Url + "/predict"
 
 	// Send image over as base64
-	dataStr := base64.StdEncoding.EncodeToString(content)
+	dataStr := base64.StdEncoding.EncodeToString(image)
 
 	req, err := http.NewRequest("POST", url, strings.NewReader(`{
 		"service": "` + c.Id + `",
@@ -33,11 +29,8 @@ func (c *ClassificationService) Classify(path string, content []byte, wg *sync.W
 		"data":["` + dataStr + `"]
 	}`))
 
-	resp, err := httpClient.Do(req)
-	if err != nil {
-		logError("Unable to classify this file.", "["+filepath.Base(path)+"]")
-		os.Exit(1)
-	}
+	resp, err := c.Conn.Do(req)
+	if err != nil { return nil, err }
 	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
@@ -47,5 +40,5 @@ func (c *ClassificationService) Classify(path string, content []byte, wg *sync.W
 	class := strings.Split(string(value), " ")
 	class = class[1:]
 
-	return class
+	return class, nil
 }

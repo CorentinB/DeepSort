@@ -3,58 +3,57 @@ package main
 import (
 	"os"
 	"path/filepath"
-	"strings"
 	"github.com/labstack/gommon/color"
-	"crypto/md5"
-	"encoding/hex"
-	"sync/atomic"
+	"github.com/CorentinB/DeepSort"
+	"bytes"
 )
 
-var replaceSpace = strings.NewReplacer(" ", "_")
-var replaceComma = strings.NewReplacer(",", "")
-var replaceDoubleQuote = strings.NewReplacer("\"", "")
 
-func (c *ClassificationService) Rename(path string, content []byte, tags []string) {
-	response := formatTags(tags)
+func renameFile(c *DeepSort.ClassificationService,
+	path string, image []byte, tags []string) {
 
-	if len(filepath.Base(path)) > 17 {
-		name := filepath.Base(path)
-		truncatedName := name[0:5] + "..." + name[len(name)-9:]
-		logSuccess(color.Yellow("[")+color.Cyan(truncatedName)+
-			color.Yellow("]")+color.Yellow(" Response: ")+
-			color.Green(response), c.Tag)
+	// Generate file name
+	newPath, tagPart := DeepSort.FormatFileName(path, image, tags)
+
+	name := filepath.Base(path)
+
+	// Log file name to console
+	if len(name) > 19 {
+		// File name is too long, truncate it
+		var message bytes.Buffer
+
+		// Write first and last path of the file name
+		truncatedName := name[0:5] + "…" + name[len(name)-9:]
+		message.WriteString(color.Yellow("[") + color.Cyan(truncatedName) + color.Yellow("]"))
+
+		// Write tags
+		message.WriteString(color.Yellow(" Response: ") + color.Green(tagPart))
+
+		logSuccess(message.String(), c.Tag)
 	} else {
-		logSuccess(color.Yellow("[")+color.Cyan(filepath.Base(path))+
-			color.Yellow("]")+color.Yellow(" Response: ")+
-			color.Green(response), c.Tag)
+		// File name fits in the console
+		var message bytes.Buffer
+
+		// Write file name
+		message.WriteString(color.Yellow("[") + color.Cyan(name) + color.Yellow("]"))
+
+		// Pad to 19 characters
+		for i := 15 - len(name); i > 0; i-- {
+			message.WriteByte(' ')
+		}
+
+		message.WriteString(color.Yellow(" Response: ") + color.Green(tagPart))
+
+		// Write tag
+		logSuccess(message.String(), c.Tag)
 	}
-	if arguments.DryRun != true {
-		hashBytes := md5.Sum(content)
-		hash := hex.EncodeToString(hashBytes[:])
-		renameFile(path, hash, response)
-	}
 
-	// Atomic increment to prevent race conditions
-	atomic.AddInt32(&arguments.CountDone, 1)
-}
-
-// Formats tags to a nice file name
-func formatTags(class []string) string {
-	result := strings.Join(class, " ")
-	result = replaceSpace.Replace(result)
-	result = replaceComma.Replace(result)
-	result = replaceDoubleQuote.Replace(result)
-	return result
-}
-
-func renameFile(path string, hash string, response string) {
-	absPath, _ := filepath.Abs(path)
-	dirPath := filepath.Dir(absPath)
-	extension := path[len(path)-4:]
-	newName := response + "_" + hash + extension
-	err := os.Rename(absPath, dirPath+"/"+newName)
-	if err != nil {
-		logError("Unable to rename this file.", "["+filepath.Base(path)+"]")
-		os.Exit(1)
+	// Rename file
+	if !arguments.DryRun {
+		err := os.Rename(path, newPath)
+		if err != nil {
+			logError("Unable to rename this file.", "["+filepath.Base(path)+"]")
+			os.Exit(1)
+		}
 	}
 }
