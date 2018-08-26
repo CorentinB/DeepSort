@@ -8,7 +8,7 @@ import (
 	"github.com/savaki/jq"
 )
 
-// Runs the image through the classification engine and
+// Classify runs the image through the classification engine and
 // returns a slice of tags
 func (c *ClassificationService) Classify(image []byte) ([]string, error) {
 	url := c.URL + "/predict"
